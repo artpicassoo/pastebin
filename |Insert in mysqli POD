@@ -1,0 +1,177 @@
+<?php
+
+//Forms posted
+if (!empty($_POST)) {
+  
+  //Manually Add User
+  if(!empty($_POST['addTask'])) {
+    $cine_post_task = Input::get('cine_post_task');
+  	$utilizator = Input::get('utilizator');
+  	$titlu = Input::get('titlu');
+  	$color = Input::get('color');
+    $descriere = Input::get('descriere');
+    $data_start = Input::get('data_start');
+    $data_end = Input::get('data_end');
+    $post_data = Input::get('post_data');
+    $post_time = Input::get('post_time');
+    $descriere = Input::get('descriere');
+
+    $form_valid=FALSE; // assume the worst
+    $validation = new Validate();
+    $validation->check($_POST,array(
+      'cine_post_task' => array(
+      'display' => '',
+      'required' => false,
+      'min' => 5,
+      'max' => 35,
+      ),
+      'utilizator' => array(
+      'display' => '',
+      'required' => false,
+      'min' => 2,
+      'max' => 35,
+      ),
+      'titlu' => array(
+      'display' => '',
+      'required' => false,
+      'min' => 2,
+      'max' => 35,
+      ),
+      'color' => array(
+      'display' => '',
+      'required' => false,
+      ),
+	  'descriere' => array(
+      'display' => '',
+      'required' => false,
+      ),
+	  'data_start' => array(
+      'display' => '',
+      'required' => false,
+      ),
+	  'data_end' => array(
+      'display' => '',
+      'required' => false,
+      ),
+	  'post_data' => array(
+      'display' => '',
+      'required' => false,
+      ),
+	  'post_time' => array(
+      'display' => '',
+      'required' => false,
+      ),
+    ));
+  	if($validation->passed()) {
+		$form_valid=true;
+      try {
+        // echo "Trying to create user";
+        $fields=array(
+          'task_utilizator' => Input::get('utilizator'),
+          'task_sub_descriere' => Input::get('descriere'),
+        );
+         $db->insert('task',$fields);
+        $theNewId=$db->lastId();
+        // bold($theNewId);
+        $addNewTask = array('id' => $theNewId, 'task_id' => $perm);
+        $db->insert('task_list_sub',$addNewTask);
+
+        $successes[] = lang("ACCOUNT_USER_ADDED");
+
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+
+    }
+  }
+}
+?>
+
+
+<form id="demo-form2" class="form-horizontal form-label-left " action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" id="payment-form">
+<br>
+					<div class="form-group">
+					
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Utilizator <span class="required"></span></label>
+                      <div class="col-md-7 col-sm-7 col-xs-12">
+                        <select id="first-name" name="utilizator" class="select2_single form-control" required="required" tabindex="-1">
+                          <option ></option>
+						   <?php
+
+                  foreach ($departamentCS as $permOp){
+                    echo "<option value='$permOp->id'>$permOp->lname</option>";
+                  }
+                  ?>
+				  
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Titlu <span class="required">*</span>
+                      </label>
+                      <div class="col-md-7 col-sm-7 col-xs-12">
+                        <input type="text" id="last-name" name="titlu" required="required" class="form-control col-md-7 col-xs-12">
+                        <input type="hidden" id="last-name" name="cine_post_task" required="required" value="<?=ucfirst($user->data()->lname)?>" class="form-control col-md-7 col-xs-12">
+                        <input name="post_time" id='time' type="hidden" value="" />
+                        <input name="post_data" id='' type="hidden" value="<?php echo date("d/m/Y");?>" />
+                    
+					
+                      </div>
+                    </div>
+
+
+
+<div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Data start <span class="required">*</span>
+                      </label>
+                      <div class="col-md-7 col-sm-7 col-xs-12">
+                       <input type="text" name="data_start" class="form-control has-feedback-left" required="required" id="single_cal2" value="<?php echo date("d/m/Y");?>" placeholder="First Name" aria-describedby="inputSuccess2Status2">
+                              <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+							  </div>
+                    </div>
+<div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Data end <span class="required">*</span>
+                      </label>
+                      <div class="col-md-7 col-sm-7 col-xs-12">
+                       <input type="text" name="data_end" class="form-control has-feedback-left" required="required" id="single_cal3" placeholder="First Name" aria-describedby="inputSuccess2Status2">
+                              <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+							  </div>
+                    </div>					
+					
+					<div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Detalii<span class="required"></span>
+                      </label>
+                      <div class="col-md-7 col-sm-7 col-xs-12">
+                        <textarea id="message" required="required" class="form-control" name="descriere" data-parsley-trigger="keyup" data-parsley-minlength="20" data-parsley-maxlength="100" data-parsley-minlength-message="Trebui sa pui celputin 20 caractere"
+                          data-parsley-validation-threshold="10"></textarea>
+                      </div>
+                    </div>
+					
+					<div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Culoare <span class="required"></span>
+                      </label>
+                      <div class="col-md-7 col-sm-7 col-xs-12">
+                        <select class="colorpicker-selectColor-unknown" name="color">
+   <option value="#000000">Black</option>					
+  <option value="#7bd148">Green</option>
+  <option value="#5484ed">Bold blue</option>
+  <option value="#a4bdfc">Blue</option>
+  <option value="#46d6db">Turquoise</option>
+  <option value="#7ae7bf">Light green</option>
+  <option value="#51b749">Bold green</option>
+  <option value="#fbd75b">Yellow</option>
+  <option value="#ffb878">Orange</option>
+  <option value="#ff887c">Red</option>
+  <option value="#dc2127">Bold red</option>
+  <option value="#dbadff">Purple</option>
+</select>
+                      </div>
+                    </div>
+					
+					
+                      </div>
+                      <div class="modal-footer">
+						<input class='btn btn-success' type='submit' name='addTask' value='Adauga' />
+                      </div>
+</form>
