@@ -1,89 +1,32 @@
 <?php
-
-//Forms posted
-if (!empty($_POST)) {
-  
-  //Manually Add User
-  if(!empty($_POST['addTask'])) {
-    $cine_post_task = Input::get('cine_post_task');
-  	$utilizator = Input::get('utilizator');
-  	$titlu = Input::get('titlu');
-  	$color = Input::get('color');
-    $descriere = Input::get('descriere');
-    $data_start = Input::get('data_start');
-    $data_end = Input::get('data_end');
-    $post_data = Input::get('post_data');
-    $post_time = Input::get('post_time');
-    $descriere = Input::get('descriere');
-
-    $form_valid=FALSE; // assume the worst
-    $validation = new Validate();
-    $validation->check($_POST,array(
-      'cine_post_task' => array(
-      'display' => '',
-      'required' => false,
-      'min' => 5,
-      'max' => 35,
-      ),
-      'utilizator' => array(
-      'display' => '',
-      'required' => false,
-      'min' => 2,
-      'max' => 35,
-      ),
-      'titlu' => array(
-      'display' => '',
-      'required' => false,
-      'min' => 2,
-      'max' => 35,
-      ),
-      'color' => array(
-      'display' => '',
-      'required' => false,
-      ),
-	  'descriere' => array(
-      'display' => '',
-      'required' => false,
-      ),
-	  'data_start' => array(
-      'display' => '',
-      'required' => false,
-      ),
-	  'data_end' => array(
-      'display' => '',
-      'required' => false,
-      ),
-	  'post_data' => array(
-      'display' => '',
-      'required' => false,
-      ),
-	  'post_time' => array(
-      'display' => '',
-      'required' => false,
-      ),
-    ));
-  	if($validation->passed()) {
-		$form_valid=true;
-      try {
-        // echo "Trying to create user";
-        $fields=array(
-          'task_utilizator' => Input::get('utilizator'),
-          'task_sub_descriere' => Input::get('descriere'),
-        );
-         $db->insert('task',$fields);
-        $theNewId=$db->lastId();
-        // bold($theNewId);
-        $addNewTask = array('id' => $theNewId, 'task_id' => $perm);
-        $db->insert('task_list_sub',$addNewTask);
-
-        $successes[] = lang("ACCOUNT_USER_ADDED");
-
-      } catch (Exception $e) {
-        die($e->getMessage());
-      }
-
-    }
-  }
+$db = DB::getInstance();
+   If(isset($_POST['submit'])){
+   
+   
+   // prepare sql and bind parameters
+   $query = $db->query("INSERT INTO task (cine_post_task, utilizator, titlu, color, descriere, data_start, data_end, post_data, post_time )
+    VALUES (
+	cine_post_task , 
+	utilizator , 
+	titlu, 
+	color , 
+	descriere , 
+	data_start , 
+	data_end , 
+	post_data , 
+	post_time
+	)");
+	 $cine_post_task = $_POST['cine_post_task'];
+    $utilizator = $_POST['utilizator'];
+    $titlu = $_POST['titlu'];
+    $color = $_POST['color'];
+    $descriere = $_POST['descriere'];
+    $data_start = $_POST['data_start'];
+    $data_end = $_POST['data_end'];
+    $post_data = $_POST['post_data'];
+    $post_time = $_POST['post_time'];
+	
+    echo "New records created successfully";
 }
 ?>
 
